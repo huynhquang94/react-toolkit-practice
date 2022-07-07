@@ -1,7 +1,6 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Login from './components/Login';
+import Login from './features/auth/pages/Login';
 
 function App() {
   return (
