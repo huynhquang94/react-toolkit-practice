@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
+import axios from 'axios';
 
 type FormData = {
   email: string
@@ -22,9 +23,11 @@ export const submitLogin = createAsyncThunk(
   'login',
   async (user: FormData) => {
     console.log(user)
-    // const response = await fetchCount(amount);
-    // // The value we return becomes the `fulfilled` action payload
-    // return response.data;
+    const email = user.email;
+    const password = user.password;
+    const response = await axios.post('/api/users/login', { email, password });
+
+    return response.data;
   }
 );
 
