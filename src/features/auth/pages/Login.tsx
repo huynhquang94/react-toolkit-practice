@@ -1,195 +1,130 @@
-import React, { useReducer, useEffect } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
-import TextField from '@material-ui/core/TextField';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import CardHeader from '@material-ui/core/CardHeader';
-import Button from '@material-ui/core/Button';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    container: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      width: 400,
-      margin: `${theme.spacing(0)} auto`
-    },
-    loginBtn: {
-      marginTop: theme.spacing(2),
-      flexGrow: 1
-    },
-    header: {
-      textAlign: 'center',
-      background: '#212121',
-      color: '#fff'
-    },
-    card: {
-      marginTop: theme.spacing(10)
-    }
-  })
-);
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import InputAdornment from '@mui/material/InputAdornment';
+import PersonIcon from '@mui/icons-material/Person';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
-//state type
+// Store
+import { submitLogin } from './../AuthSlice';
+import { AppDispatch } from './../../../app/store';
 
-type State = {
-  username: string
-  password:  string
-  isButtonDisabled: boolean
-  helperText: string
-  isError: boolean
-};
 
-const initialState:State = {
-  username: '',
-  password: '',
-  isButtonDisabled: true,
-  helperText: '',
-  isError: false
-};
+/**
+ * Form Validation Schema
+ */
+const schema = yup.object().shape({
+  email: yup.string().email('Please enter a valid email.').required('Please enter your email.'),
+  password: yup.string().required('Please enter your password.'),
+});
 
-type Action = { type: 'setUsername', payload: string }
-  | { type: 'setPassword', payload: string }
-  | { type: 'setIsButtonDisabled', payload: boolean }
-  | { type: 'loginSuccess', payload: string }
-  | { type: 'loginFailed', payload: string }
-  | { type: 'setIsError', payload: boolean };
 
-const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case 'setUsername': 
-      return {
-        ...state,
-        username: action.payload
-      };
-    case 'setPassword': 
-      return {
-        ...state,
-        password: action.payload
-      };
-    case 'setIsButtonDisabled': 
-      return {
-        ...state,
-        isButtonDisabled: action.payload
-      };
-    case 'loginSuccess': 
-      return {
-        ...state,
-        helperText: action.payload,
-        isError: false
-      };
-    case 'loginFailed': 
-      return {
-        ...state,
-        helperText: action.payload,
-        isError: true
-      };
-    case 'setIsError': 
-      return {
-        ...state,
-        isError: action.payload
-      };
-  }
+type FormData = {
+  email: string
+  password: string
 }
 
-const Login = () => {
-  const classes = useStyles();
-  const [state, dispatch] = useReducer(reducer, initialState);
+const defaultValues: FormData = {
+  email: '',
+  password: '',
+};
+
+function Login() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { control, setValue, formState, handleSubmit, reset, trigger } = useForm({
+    mode: 'onChange',
+    defaultValues,
+    resolver: yupResolver(schema),
+  });
+
+  const { errors } = formState;
+
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    if (state.username.trim() && state.password.trim()) {
-     dispatch({
-       type: 'setIsButtonDisabled',
-       payload: false
-     });
-    } else {
-      dispatch({
-        type: 'setIsButtonDisabled',
-        payload: true
-      });
-    }
-  }, [state.username, state.password]);
+    setValue('email', '', { shouldDirty: true, shouldValidate: false });
+    setValue('password', '', { shouldDirty: true, shouldValidate: false });
+  }, [reset, setValue, trigger]);
 
-  const handleLogin = () => {
-    if (state.username === 'abc@email.com' && state.password === 'password') {
-      dispatch({
-        type: 'loginSuccess',
-        payload: 'Login Successfully'
-      });
-    } else {
-      dispatch({
-        type: 'loginFailed',
-        payload: 'Incorrect username or password'
-      });
-    }
-  };
+  function onSubmit(model: FormData) {
+    dispatch(submitLogin(model));
+  }
 
-  const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.keyCode === 13 || event.which === 13) {
-      state.isButtonDisabled || handleLogin();
-    }
-  };
-
-  const handleUsernameChange: React.ChangeEventHandler<HTMLInputElement> =
-    (event) => {
-      dispatch({
-        type: 'setUsername',
-        payload: event.target.value
-      });
-    };
-
-  const handlePasswordChange: React.ChangeEventHandler<HTMLInputElement> =
-    (event) => {
-      dispatch({
-        type: 'setPassword',
-        payload: event.target.value
-      });
-    }
   return (
-    <form className={classes.container} noValidate autoComplete="off">
-      <Card className={classes.card}>
-        <CardHeader className={classes.header} title="Login App" />
-        <CardContent>
-          <div>
+    <div className="w-2/5 pt-20 m-auto">
+      <form className="flex flex-col justify-center w-full" onSubmit={handleSubmit(onSubmit)}>
+        <Controller
+          name="email"
+          control={control}
+          render={({ field }) => (
             <TextField
-              error={state.isError}
-              fullWidth
-              id="username"
-              type="email"
-              label="Username"
-              placeholder="Username"
-              margin="normal"
-              onChange={handleUsernameChange}
-              onKeyPress={handleKeyPress}
+              {...field}
+              className="mb-16"
+              type="text"
+              error={!!errors.email}
+              helperText={errors?.email?.message || ' '}
+              label="Email"
+              InputProps={{
+                className: 'pr-2',
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <PersonIcon />
+                  </InputAdornment>
+                ),
+              }}
+              variant="outlined"
+              required
             />
+          )}
+        />
+
+        <Controller
+          name="password"
+          control={control}
+          render={({ field }) => (
             <TextField
-              error={state.isError}
-              fullWidth
-              id="password"
-              type="password"
+              {...field}
+              className="mb-16"
               label="Password"
-              placeholder="Password"
-              margin="normal"
-              helperText={state.helperText}
-              onChange={handlePasswordChange}
-              onKeyPress={handleKeyPress}
+              type="password"
+              error={!!errors.password}
+              helperText={errors?.password?.message || ' '}
+              variant="outlined"
+              InputProps={{
+                className: 'pr-2',
+                type: showPassword ? 'text' : 'password',
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <VisibilityIcon />
+                  </InputAdornment>
+                ),
+              }}
+              required
             />
-          </div>
-        </CardContent>
-        <CardActions>
-          <Button
-            variant="contained"
-            size="large"
-            color="secondary"
-            className={classes.loginBtn}
-            onClick={handleLogin}
-            disabled={state.isButtonDisabled}>
-            Login
-          </Button>
-        </CardActions>
-      </Card>
-    </form>
+          )}
+        />
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          className="w-full mx-auto mt-16"
+          aria-label="LOG IN"
+          // disabled={_.isEmpty(dirtyFields) || !isValid || login.status === 'pending'}
+          value="legacy"
+        >
+          {/* {login.status !== 'pending' && 'Login'}
+          {login.status === 'pending' && <CircularProgress size={22} />} */}
+          Login
+        </Button>
+      </form>
+    </div>
   );
 }
 
