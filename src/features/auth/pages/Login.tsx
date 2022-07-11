@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,7 +13,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 // Store
 import { submitLogin } from './../AuthSlice';
-import { AppDispatch } from './../../../app/store';
+import { selectErrors } from './../AuthSlice'; 
 
 
 /**
@@ -36,8 +36,9 @@ const defaultValues: FormData = {
 };
 
 function Login() {
-  const dispatch = useDispatch<AppDispatch>();
-  const { control, setValue, formState, handleSubmit, reset, trigger } = useForm({
+  const dispatch = useDispatch();
+  const messageError = useSelector(selectErrors);
+  const { control, formState, handleSubmit, setError } = useForm({
     mode: 'onChange',
     defaultValues,
     resolver: yupResolver(schema),
@@ -48,9 +49,13 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    setValue('email', '', { shouldDirty: true, shouldValidate: false });
-    setValue('password', '', { shouldDirty: true, shouldValidate: false });
-  }, [reset, setValue, trigger]);
+    messageError?.forEach((error) => {
+      setError(error.type, {
+        type: 'manual',
+        message: error.message,
+      });
+    });
+  }, [messageError, setError]);
 
   function onSubmit(model: FormData) {
     dispatch(submitLogin(model));
@@ -100,7 +105,7 @@ function Login() {
                 className: 'pr-2',
                 type: showPassword ? 'text' : 'password',
                 endAdornment: (
-                  <InputAdornment position="end">
+                  <InputAdornment onClick={() => setShowPassword(!showPassword)} position="end" className="cursor-pointer">
                     <VisibilityIcon />
                   </InputAdornment>
                 ),

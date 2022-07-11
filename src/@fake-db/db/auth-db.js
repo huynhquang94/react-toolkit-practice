@@ -9,7 +9,7 @@ const authDB = {
       password: 'Abcd@1234',
       id: '617779cc83f43ef0f3b2',
       roleId: 'admin',
-      name: 'Admin',
+      userName: 'Admin',
       email: 'admin@gmail.com',
     },
   ],
@@ -47,5 +47,5 @@ mock.onPost('/api/users/login').reply(async (config) => {
     return [200, response];
   }
 
-  return [200, { error }];
+  return [404, { error }];
 });
