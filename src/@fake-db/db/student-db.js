@@ -47,6 +47,6 @@ const studentsDB = {
   ]
 };
 
-mock.onGet('/api/students').reply(config => {
+mock.onGet('/api/students').reply(() => {
   return [200, studentsDB];
 });
