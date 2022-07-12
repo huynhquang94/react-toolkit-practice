@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { type } from '@testing-library/user-event/dist/type';
 import axios from 'axios';
 
 import { AppThunkAction, RootState } from '../../app/store';
@@ -36,7 +35,7 @@ export const submitLogin =
       const { email, password } = user; 
       const response = await axios.post('/api/users/login', { email, password });
       return dispatch(loginSuccess(response.data.user));
-    } catch (error) {
+    } catch (error: any) {
      dispatch(loginError(error?.response?.data));
     }
   };
@@ -66,5 +65,6 @@ export const authSlice = createSlice({
 export const { loginSuccess, loginError } = authSlice.actions;
 
 export const selectErrors = (state: RootState) => state.auth.errors;
+export const selectStatus = (state: RootState) => state.auth.status;
 
 export default authSlice.reducer;

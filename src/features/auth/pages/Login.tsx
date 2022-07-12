@@ -13,7 +13,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 // Store
 import { submitLogin } from './../AuthSlice';
-import { selectErrors } from './../AuthSlice'; 
+import { selectErrors, selectStatus } from './../AuthSlice'; 
+import { Status } from '../../../enum/requestStatus';
+import { useNavigate } from 'react-router-dom';
 
 
 /**
@@ -37,7 +39,12 @@ const defaultValues: FormData = {
 
 function Login() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const messageError = useSelector(selectErrors);
+  const status = useSelector(selectStatus);
+  if(status === Status.SUCCESS) {
+    navigate('/home');
+  }
   const { control, formState, handleSubmit, setError } = useForm({
     mode: 'onChange',
     defaultValues,
