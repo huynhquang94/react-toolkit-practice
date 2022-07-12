@@ -1,18 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 import { AppThunkAction, RootState } from '../../app/store';
 import { Status } from '../../enum/requestStatus';
-
-type FormData = {
-  email: string
-  password: string
-}
-
-type Error = {
-  message: string;
-  type: 'password' | 'email';
-}
+import { FormData, Error } from './type';
 
 export interface UserState {
   userName: string;
@@ -45,7 +36,7 @@ export const authSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    loginSuccess: (state, action) => {
+    loginSuccess: (state, action: PayloadAction<UserState>) => {
       const { payload } = action;
       state.status = Status.SUCCESS;
       state.email = payload.email;

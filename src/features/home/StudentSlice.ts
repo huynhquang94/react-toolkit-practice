@@ -3,14 +3,10 @@ import axios from 'axios';
 
 import { RootState } from '../../app/store';
 import { Status } from '../../enum/requestStatus';
+import Student from './model/student';
+import { StudentResponse } from './response/student';
+import { ResponsePayload } from './../../interfaces/api';
 
-export interface Student {
-  id: string;
-  name: string;
-  gender: string;
-  mark: number;
-  city: string;
-}
 
 export interface StudentState {
   status?: Status.IDLE | Status.ERROR | Status.PENDING | Status.SUCCESS;
@@ -23,7 +19,7 @@ const initialState: StudentState = {
 export const getStudents = createAsyncThunk(
   'getStudents',
   async () => {
-    const response = await axios.get('/api/students');
+    const response = await axios.get<ResponsePayload<StudentResponse[]>>('/api/students');
     return response.data
   }
 );
@@ -46,11 +42,11 @@ export const studentSlice = createSlice({
         state.status = Status.PENDING;
       })
       .addCase(getStudents.fulfilled, (state, action) => {
-        const {
-          payload: { items },
-        } = action;
+        const { results } = action.payload;
 
-        studentAdapter.setAll(state, items);
+        const students = results.map((student) => new Student(student));
+
+        studentAdapter.setAll(state, students);
         state.status = Status.SUCCESS;
       })
       .addCase(getStudents.rejected, (state, action) => {

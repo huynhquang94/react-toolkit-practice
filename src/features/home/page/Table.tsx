@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Paper from '@mui/material/Paper';
 import { Table as MuiTable, TableContainer } from '@mui/material';
 import TableHeader from './TableHeader';

@@ -1,4 +1,4 @@
-import { configureStore, ThunkAction, Action, AnyAction } from '@reduxjs/toolkit';
+import { configureStore, ThunkAction, AnyAction } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import authReducer from '../features/auth/AuthSlice';

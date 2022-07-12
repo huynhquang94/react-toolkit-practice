@@ -17,7 +17,7 @@ function TableBody() {
                 {type === 'string' && student[field]}
                 {type === 'number' && student[field]}
               </TableCell>
-                ))}
+            ))}
           </TableRow>
         ))}
     </MuiTableBody>

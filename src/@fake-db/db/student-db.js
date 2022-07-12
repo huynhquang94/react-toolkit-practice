@@ -1,7 +1,7 @@
 import mock from '../mock';
 
 const studentsDB = {
-  items: [
+  results: [
     {
       id: '8754ebdc-ef44-4098-9cf7-89d25088d39f',
       name: 'QuangPH2',
