@@ -7,6 +7,7 @@ import Login from './features/auth/pages/Login';
 import axios from 'axios';
 import Table from './features/home/page/Table';
 import { Box } from '@mui/material';
+import Header from './components/common/Header';
 /**
  * Axios HTTP Request defaults
  */
@@ -17,6 +18,9 @@ axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencod
 function App() {
   return (
     <div className="App">
+      <Box>
+        <Header />
+      </Box>
       <Box>
         <Routes>
           <Route path="/" element={<Login />} />

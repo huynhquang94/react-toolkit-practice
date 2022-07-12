@@ -44,7 +44,7 @@ const studentsDB = {
       mark: 8,
       city: 'Quang Binh',
     },
-  ]
+  ],
 };
 
 mock.onGet('/api/students').reply(() => {
