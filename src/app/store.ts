@@ -2,10 +2,12 @@ import { configureStore, ThunkAction, Action, AnyAction } from '@reduxjs/toolkit
 import { useDispatch } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import authReducer from '../features/auth/AuthSlice';
+import studentReducer from '../features/home/StudentSlice';
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer
+    auth: authReducer,
+    student: studentReducer,
   },
   middleware: [thunkMiddleware],
 });

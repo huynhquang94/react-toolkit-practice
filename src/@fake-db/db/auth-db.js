@@ -16,7 +16,6 @@ const authDB = {
 };
 
 mock.onPost('/api/users/login').reply(async (config) => {
-  console.log(config);
   const data = JSON.parse(config.data);
   const { email, password } = data;
   const user = _.cloneDeep(authDB.users.find((_user) => _user.email === email));
