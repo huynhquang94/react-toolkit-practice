@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,13 +11,14 @@ import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
 import PersonIcon from '@mui/icons-material/Person';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { CircularProgress } from '@mui/material';
 
 // Store
 import { submitLogin } from './../AuthSlice';
-import { selectErrors, selectStatus } from './../AuthSlice'; 
-import { Status } from '../../../enum/requestStatus';
-import { useNavigate } from 'react-router-dom';
+import { selectErrors, selectStatus } from './../AuthSlice';
 
+// constant
+import { Status } from '../../../enum/requestStatus';
 
 /**
  * Form Validation Schema
@@ -42,9 +44,7 @@ function Login() {
   const navigate = useNavigate();
   const messageError = useSelector(selectErrors);
   const status = useSelector(selectStatus);
-  if(status === Status.SUCCESS) {
-    navigate('/');
-  }
+
   const { control, formState, handleSubmit, setError } = useForm({
     mode: 'onChange',
     defaultValues,
@@ -62,7 +62,11 @@ function Login() {
         message: error.message,
       });
     });
-  }, [messageError, setError]);
+
+    if(status === Status.SUCCESS) {
+      navigate('/');
+    };
+  }, [messageError, setError, dispatch, status]);
 
   function onSubmit(model: FormData) {
     dispatch(submitLogin(model));
@@ -131,9 +135,8 @@ function Login() {
           // disabled={_.isEmpty(dirtyFields) || !isValid || login.status === 'pending'}
           value="legacy"
         >
-          {/* {login.status !== 'pending' && 'Login'}
-          {login.status === 'pending' && <CircularProgress size={22} />} */}
-          Login
+          {status !== Status.PENDING && 'Login'}
+          {status === Status.PENDING && <CircularProgress size={22} />}
         </Button>
       </form>
     </div>
