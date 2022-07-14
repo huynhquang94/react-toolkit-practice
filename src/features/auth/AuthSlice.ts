@@ -22,14 +22,14 @@ const initialState: UserState = {
 export const submitLogin =
   (user: FormData): AppThunkAction =>
   async (dispatch) => {
+    dispatch(login());
     try {
       const { email, password } = user; 
       const response = await axios.post('/api/users/login', { email, password });
-      console.log(response);
       setSession(response?.data?.access_token);
       return dispatch(loginSuccess(response.data.user));
     } catch (error: any) {
-     dispatch(loginError(error?.response?.data));
+      dispatch(loginError(error?.response?.data));
     }
   };
 
@@ -38,19 +38,25 @@ export const authSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
+    login: (state) => {
+      state.status = Status.PENDING;
+    },
+
     loginSuccess: (state, action: PayloadAction<UserState>) => {
       const { payload } = action;
       state.status = Status.SUCCESS;
       state.email = payload.email;
       state.userName = payload.userName;
     },
+
     loginError: (state, action) => {
       const { payload } = action;
       state.status = Status.ERROR;
       state.errors = payload.error;
     },
-    logout: (state, action) => {
-      console.log('qttttt');
+
+    logout: (state) => {
+      state.status = Status.IDLE;
       setSession('');
     },
   },
@@ -59,8 +65,11 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
   },
 });
-export const { loginSuccess, loginError, logout } = authSlice.actions;
 
+// Action
+export const { login, loginSuccess, loginError, logout } = authSlice.actions;
+
+// Selectors
 export const selectErrors = (state: RootState) => state.auth.errors;
 export const selectStatus = (state: RootState) => state.auth.status;
 
@@ -73,7 +82,6 @@ function setSession(accessToken: string) {
 
     axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
   } else {
-    console.log("qqqq");
     localStorage.removeItem('jwt_access_token');
 
     delete axios.defaults.headers.common.Authorization;

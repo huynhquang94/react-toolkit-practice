@@ -24,7 +24,7 @@ function Header() {
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
-    dispatch(logout('logout'));
+    dispatch(logout());
     navigate('/login');
   };
 
