@@ -3,7 +3,10 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
+import { logout } from '../../features/auth/AuthSlice';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -17,10 +20,12 @@ const useStyles = makeStyles(() => ({
 
 function Header() {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
-    navigate('/');
+    dispatch(logout('logout'));
+    navigate('/login');
   };
 
   return (

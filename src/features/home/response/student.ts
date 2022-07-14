@@ -1,7 +1,7 @@
 export interface StudentResponse {
   id: string;
   name: string;
-  gender: string;
+  gender: 'male' | 'female';
   mark: number;
   city: string;
 };

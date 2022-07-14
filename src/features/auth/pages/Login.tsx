@@ -43,7 +43,7 @@ function Login() {
   const messageError = useSelector(selectErrors);
   const status = useSelector(selectStatus);
   if(status === Status.SUCCESS) {
-    navigate('/home');
+    navigate('/');
   }
   const { control, formState, handleSubmit, setError } = useForm({
     mode: 'onChange',

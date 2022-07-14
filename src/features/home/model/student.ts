@@ -3,15 +3,15 @@ import { StudentResponse } from '../response/student';
 export default class Student {
   id: string;
   name: string;
-  gender: string;
+  gender: 'male' | 'female';
   mark: number;
   city: string;
 
-  constructor(user: StudentResponse) {
-    this.id = user.id;
-    this.name = user.name;
-    this.gender = user.gender;
-    this.mark = user.mark;
-    this.city = user.city;
+  constructor(student: StudentResponse) {
+    this.id = student.id;
+    this.name = student.name;
+    this.gender = student.gender;
+    this.mark = student.mark;
+    this.city = student.city;
   }
 }

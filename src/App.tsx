@@ -1,6 +1,6 @@
 import './@fake-db';
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, { Fragment } from 'react';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import './App.css';
 import Login from './features/auth/pages/Login';
 
@@ -8,6 +8,8 @@ import axios from 'axios';
 import Table from './features/home/page/Table';
 import { Box } from '@mui/material';
 import Header from './components/common/Header';
+import { PrivateRoute } from './components/common/PrivateRoute';
+import { AppLayout } from './components/common/AppLayout';
 /**
  * Axios HTTP Request defaults
  */
@@ -17,17 +19,12 @@ axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencod
 
 function App() {
   return (
-    <div className="App">
-      <Box>
-        <Header />
-      </Box>
-      <Box>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/home" element={<Table />} />
-        </Routes>
-      </Box>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<PrivateRoute />}>
+        <Route path="" element={<AppLayout />} />
+      </Route>
+    </Routes>
   );
 }
 
