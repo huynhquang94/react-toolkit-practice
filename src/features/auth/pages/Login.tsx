@@ -73,15 +73,15 @@ function Login() {
   }
 
   return (
-    <div className="w-2/5 pt-20 m-auto">
-      <form className="flex flex-col justify-center w-full" onSubmit={handleSubmit(onSubmit)}>
+    <div className="w-2/5 pt-20 m-auto shadow-md">
+      <form className="flex flex-col justify-center w-full " onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="email"
           control={control}
           render={({ field }) => (
             <TextField
               {...field}
-              className="mb-16"
+              className="m-10"
               type="text"
               error={!!errors.email}
               helperText={errors?.email?.message || ' '}
@@ -106,7 +106,7 @@ function Login() {
           render={({ field }) => (
             <TextField
               {...field}
-              className="mb-16"
+              className="m-10"
               label="Password"
               type="password"
               error={!!errors.password}
@@ -130,7 +130,7 @@ function Login() {
           type="submit"
           variant="contained"
           color="primary"
-          className="w-full mx-auto mt-16"
+          className="w-full mx-auto m-10"
           aria-label="LOG IN"
           // disabled={_.isEmpty(dirtyFields) || !isValid || login.status === 'pending'}
           value="legacy"

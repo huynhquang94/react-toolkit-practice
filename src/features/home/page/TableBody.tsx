@@ -4,6 +4,14 @@ import { useSelector } from 'react-redux';
 import { selectStudents } from '../StudentSlice';
 import tableLabel from '../constant/TableLabel';
 
+export type Student = {
+  id: string;
+  name: string;
+  gender: 'male' | 'female';
+  mark: number;
+  city: string;
+}
+
 function TableBody() {
   const students = useSelector(selectStudents);
 
